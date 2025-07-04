@@ -1,1 +1,17 @@
 
+
+body {
+  font-family: 'Noto Sans Bengali', sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+#currency-converter {
+  max-width: 420px;
+  margin: auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+/* More styling can go here */
