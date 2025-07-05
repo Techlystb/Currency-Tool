@@ -1,41 +1,76 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const base = document.getElementById('base');
-  const target = document.getElementById('target');
-  const amount = document.getElementById('amount');
-  const result = document.getElementById('result');
-  const btn = document.getElementById('convert');
+  const baseSelect = document.getElementById('base');
+  const targetSelect = document.getElementById('target');
+  const amountInput = document.getElementById('amount');
+  const resultBox = document.getElementById('result');
+  const convertBtn = document.getElementById('convert');
 
-  // স্কিপ countries declaration—যদি আগে দেখানো না হয়ে থাকে!
+  const countries = {
+    "USD": "🇺🇸 যুক্তরাষ্ট্র",
+    "EUR": "🇪🇺 ইউরো অঞ্চল",
+    "GBP": "🇬🇧 যুক্তরাজ্য",
+    "BDT": "🇧🇩 বাংলাদেশ",
+    "INR": "🇮🇳 ভারত",
+    "PKR": "🇵🇰 পাকিস্তান",
+    "AUD": "🇦🇺 অস্ট্রেলিয়া",
+    "CAD": "🇨🇦 কানাডা",
+    "CNY": "🇨🇳 চীন",
+    "JPY": "🇯🇵 জাপান",
+    "SAR": "🇸🇦 সৌদি আরব",
+    "AED": "🇦🇪 সংযুক্ত আরব আমিরাত",
+    "TRY": "🇹🇷 তুরস্ক",
+    "RUB": "🇷🇺 রাশিয়া",
+    "NOK": "🇳🇴 নরওয়ে",
+    "SEK": "🇸🇪 সুইডেন",
+    "DKK": "🇩🇰 ডেনমার্ক",
+    "CHF": "🇨🇭 সুইজারল্যান্ড",
+    "SGD": "🇸🇬 সিঙ্গাপুর",
+    "THB": "🇹🇭 থাইল্যান্ড",
+    "MYR": "🇲🇾 মালয়েশিয়া",
+    "KRW": "🇰🇷 দক্ষিণ কোরিয়া",
+    "ZAR": "🇿🇦 দক্ষিণ আফ্রিকা",
+    "HKD": "🇭🇰 হংকং",
+    "EGP": "🇪🇬 মিশর",
+    "NGN": "🇳🇬 নাইজেরিয়া",
+    "ILS": "🇮🇱 ইসরায়েল",
+    "BRL": "🇧🇷 ব্রাজিল",
+    "MXN": "🇲🇽 মেক্সিকো",
+    "NZD": "🇳🇿 নিউজিল্যান্ড",
+    "PLN": "🇵🇱 পোল্যান্ড"
+  };
 
-  btn.addEventListener('click', () => {
-    const b = base.value;
-    const t = target.value;
-    const amt = parseFloat(amount.value);
-    if (!amt || amt <= 0) {
-      return result.textContent = '⚠️ সঠিক পরিমাণ লিখুন।';
+  for (const code in countries) {
+    const option = `<option value="${code}">${code} - ${countries[code]}</option>`;
+    baseSelect.innerHTML += option;
+    targetSelect.innerHTML += option;
+  }
+
+  baseSelect.value = "USD";
+  targetSelect.value = "BDT";
+
+  convertBtn.addEventListener('click', () => {
+    const base = baseSelect.value;
+    const target = targetSelect.value;
+    const amount = parseFloat(amountInput.value);
+
+    if (!amount || amount <= 0) {
+      resultBox.textContent = "⚠️ সঠিক পরিমাণ লিখুন।";
+      return;
     }
 
-    result.textContent = '🔄 রেট লোড হচ্ছে…';
+    resultBox.textContent = "🔄 রেট লোড হচ্ছে...";
 
-    // ফ্রি API URL (CORS-enabled)
-    const url = `https://api.exchangerate.host/latest?base=${b}&symbols=${t}`;
-    fetch(url)
-      .then(res => {
-        console.log('Fetch HTTP status:', res.status);
-        return res.json();
-      })
+    fetch(`https://currency-proxy-tech.web.app/api/latest?base=${base}`)
+      .then(res => res.json())
       .then(data => {
-        console.log('Fetch JSON response:', data);
-        if (!data || !data.rates || !data.rates[t]) {
-          throw new Error('রেট পাওয়া যায়নি বা ভ্যালু সরাসরি রেসপন্সে নেই');
-        }
-        const rate = data.rates[t];
-        const conv = (amt * rate).toFixed(2);
-        result.innerHTML = `✅ ${amt} ${b} = <b>${conv} ${t}</b>`;
+        const rate = data.rates[target];
+        if (!rate) throw new Error("Invalid target currency");
+        const converted = (amount * rate).toFixed(2);
+        resultBox.innerHTML = `✅ ${amount} ${base} = <b>${converted} ${target}</b>`;
       })
       .catch(err => {
-        console.error('Error during fetch or parsing:', err);
-        result.textContent = '⚠️ রেট লোড করতে সমস্যা হয়েছে। দয়া করে কনসোল দেখো বা কিছুক্ষণ পরে আবার চেষ্টা করো।';
+        console.error(err);
+        resultBox.textContent = "⚠️ রেট লোড করতে সমস্যা হয়েছে।";
       });
   });
 });
