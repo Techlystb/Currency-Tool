@@ -1,3 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Currency Converter</title>
+  <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js" defer></script>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .converter-box {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    .converter-box h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+      color: #222;
+      font-size: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #121212;
+        color: #eee;
+      }
+
+      .converter-box {
+        background: #1e1e1e;
+        color: #eee;
+      }
+
+      select, input {
+        background: #2c2c2c;
+        border: 1px solid #555;
+        color: #eee;
+      }
+
+      button {
+        background-color: #388e3c;
+      }
+
+      button:hover {
+        background-color: #2e7d32;
+      }
+
+      .result {
+        color: #8bc34a;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="converter-box">
+    <h2>💱 মুদ্রা রূপান্তর</h2>
+
+    <div class="form-group">
+      <label for="base">মূল মুদ্রা</label>
+      <select id="base"></select>
+    </div>
+
+    <div class="form-group">
+      <label for="target">টার্গেট মুদ্রা</label>
+      <select id="target"></select>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">পরিমাণ</label>
+      <input type="number" id="amount" value="1" min="0" />
+    </div>
+
+    <button id="convert">রূপান্তর করুন</button>
+    <div class="result" id="result">ফলাফল এখানে দেখা যাবে</div>
+  </div>
+</body>
+</html>
+
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
