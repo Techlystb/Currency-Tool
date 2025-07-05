@@ -1,42 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const baseSelect = document.getElementById('base');
-  const targetSelect = document.getElementById('target');
-  const amountInput = document.getElementById('amount');
-  const resultBox = document.getElementById('result');
-  const convertBtn = document.getElementById('convert');
+  const base = document.getElementById('base');
+  const target = document.getElementById('target');
+  const amount = document.getElementById('amount');
+  const result = document.getElementById('result');
+  const btn = document.getElementById('convert');
 
-  const countries = { /* তোমার countries object */ };
+  // স্কিপ countries declaration—যদি আগে দেখানো না হয়ে থাকে!
 
-  // populate dropdowns...
-  for (const code in countries) {
-    const opt = `<option value="${code}">${code} - ${countries[code]}</option>`;
-    baseSelect.innerHTML += opt;
-    targetSelect.innerHTML += opt;
-  }
-  baseSelect.value = 'USD';
-  targetSelect.value = 'BDT';
-
-  convertBtn.addEventListener('click', () => {
-    const base = baseSelect.value;
-    const target = targetSelect.value;
-    const amount = parseFloat(amountInput.value);
-    if (!amount || amount <= 0) {
-      resultBox.textContent = '⚠️ সঠিক পরিমাণ লিখুন।';
-      return;
+  btn.addEventListener('click', () => {
+    const b = base.value;
+    const t = target.value;
+    const amt = parseFloat(amount.value);
+    if (!amt || amt <= 0) {
+      return result.textContent = '⚠️ সঠিক পরিমাণ লিখুন।';
     }
-    resultBox.textContent = '🔄 রেট লোড হচ্ছে...';
 
-    fetch(`https://api.exchangeratesapi.io/latest?base=${base}`)
-      .then(res => res.json())
+    result.textContent = '🔄 রেট লোড হচ্ছে…';
+
+    // ফ্রি API URL (CORS-enabled)
+    const url = `https://api.exchangerate.host/latest?base=${b}&symbols=${t}`;
+    fetch(url)
+      .then(res => {
+        console.log('Fetch HTTP status:', res.status);
+        return res.json();
+      })
       .then(data => {
-        if (!data || !data.rates[target]) throw new Error('Invalid rate');
-        const rate = data.rates[target];
-        const converted = (amount * rate).toFixed(2);
-        resultBox.innerHTML = `✅ ${amount} ${base} = <b>${converted} ${target}</b>`;
+        console.log('Fetch JSON response:', data);
+        if (!data || !data.rates || !data.rates[t]) {
+          throw new Error('রেট পাওয়া যায়নি বা ভ্যালু সরাসরি রেসপন্সে নেই');
+        }
+        const rate = data.rates[t];
+        const conv = (amt * rate).toFixed(2);
+        result.innerHTML = `✅ ${amt} ${b} = <b>${conv} ${t}</b>`;
       })
       .catch(err => {
-        console.error(err);
-        resultBox.textContent = '⚠️ রেট লোড করতে সমস্যা হয়েছে।';
+        console.error('Error during fetch or parsing:', err);
+        result.textContent = '⚠️ রেট লোড করতে সমস্যা হয়েছে। দয়া করে কনসোল দেখো বা কিছুক্ষণ পরে আবার চেষ্টা করো।';
       });
   });
 });
